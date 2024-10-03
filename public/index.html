@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System</title>
+   <link rel="stylesheet" href="style.css">
+   <link rel="script" href="script.js">
+</head>
+<body>
+    <header>
+        <h1>Library Management System</h1>
+        
+    </header>
+    <nav>
+        <a href="#" onclick="showPage('home')">Home</a>
+        <a href="#" id="loginLink" onclick="showPage('login')">Login</a>
+        <a href="#" id="registerLink" onclick="showPage('register')">Register</a>
+        <a href="#" id="profileLink" class="hidden" onclick="showPage('profile')">Profile</a>
+        <a href="#" onclick="showPage('bookList')">Book List</a>
+        <a href="#" id="borrowListLink" class="hidden" onclick="showPage('borrowList')">Borrow List</a>
+        <a href="#" id="studentListLink" class="hidden" onclick="showPage('studentList')">Student List</a>
+        <a href="#" id="borrowRequestsLink" class="hidden" onclick="showPage('borrowRequests')">Borrow Requests</a>
+        <a href="#" id="logoutLink" class="hidden" onclick="logout()">Logout</a>
+        <div id="adminLoginContainer">
+            <a href="https://library-management-wyx6.onrender.com/admin/" id="adminLoginLink">Admin Login</a>
+        </div>
+    </nav>
+    
+
+    
+    <div class="container">
+        <div id="homePage">
+            <h2>Welcome to the Library!</h2>
+            <p>Please log in to manage your borrow requests and view your profile.</p>
+        </div>
+        <div id="loginPage" class="hidden">
+            <h2>Login</h2>
+            <form onsubmit="login(event)">
+                <label>Username: <input type="text" id="loginUsername" required></label><br><br>
+                <label>Password: <input type="password" id="loginPassword" required></label><br><br>
+                <button type="submit" class="button">Login</button>
+            </form>
+        </div>
+        <div id="registerPage" class="hidden">
+            <h2>Register</h2>
+            <form onsubmit="register(event)">
+                <label>Username: <input type="text" id="registerUsername" required></label><br><br>
+                <label>Email: <input type="email" id="registerEmail" required></label><br><br>
+                <label>First Name: <input type="text" id="registerFirstName" required></label><br><br>
+                <label>Last Name: <input type="text" id="registerLastName" required></label><br><br>
+                <label>Password: <input type="password" id="registerPassword" required></label><br><br>
+                <label>Confirm Password: <input type="password" id="rewritePassword" required></label><br><br>
+                <button type="submit" class="button">Register</button>
+            </form>
+        </div>
+        <div id="profilePage" class="hidden">
+            <h2>User Profile</h2>
+            <div id="userInfo">
+                <label>Username: <span id="userUsername"></span></label><br><br>
+                <label>Email: <span id="userEmailDisplay"></span></label><br><br>
+                <label>First Name: <span id="userFirstNameDisplay"></span></label><br><br>
+                <label>Last Name: <span id="userLastNameDisplay"></span></label><br><br>
+                <label>Phone: <span id="userPhoneDisplay"></span></label><br><br>
+                <label>Session: <span id="userSessionDisplay"></span></label><br><br>
+                <button class="button" onclick="showUpdateForm()">Update</button>
+            </div>
+        
+            <div id="updateForm" class="hidden">
+                <h3>Update Profile</h3>
+                <form onsubmit="updateProfile(event)">
+                    <label>Email: <input type="email" id="userEmail" value="" required></label><br><br>
+                    <label>First Name: <input type="text" id="userFirstName" value="" required></label><br><br>
+                    <label>Last Name: <input type="text" id="userLastName" value="" required></label><br><br>
+                    <label>Phone: <input type="text" id="userPhone" value="" required></label><br><br>
+                    <label>Session: <input type="text" id="userSession" value="" required></label><br><br>
+                    <button type="submit" class="button">Submit Update</button>
+                    <button type="button" class="button" onclick="hideUpdateForm()">Cancel</button>
+                </form>
+            </div>
+        
+            <h3>Borrowed Books</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Book Name</th>
+                        <th>Author</th>
+                        <th>Issue Date</th>
+                        <th>Return Date</th> <!-- Added Return Date column -->
+                        <th>Days Left</th> <!-- Added countdown column -->
+                    </tr>
+                </thead>
+                <tbody id="borrowedBooksList"></tbody>
+            </table>
+            <button class="button" onclick="logout()">Logout</button>
+        </div>
+        
+        <div id="bookListPage" class="hidden">
+            <h2>Book List</h2>
+            
+            <!-- Search, Ordering, and Filter Section -->
+            <div>
+                <input type="text" id="bookSearch" placeholder="Search for books..." oninput="searchBooks()" />
+                <select id="bookOrder" onchange="orderBooks()">
+                    <option value="">Order By</option>
+                    <option value="book_name">Name</option>
+                    <option value="author">Author</option>
+                    <option value="quantity">Quantity</option>
+                </select>
+                <select id="bookOrderDirection" onchange="orderBooks()">
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                </select>
+                <select id="bookFilter" onchange="filterBooks()">
+                    <option value="">Filter By</option>
+                    <option value="available">Available</option>
+                    <option value="unavailable">Unavailable</option>
+                </select>
+            </div>
+        
+            <!-- Book List Table -->
+            <table id="bookList">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Author</th>
+                        <th>Quantity</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        
+        <!--  -->
+        <div id="borrowListPage" class="page hidden">
+            <!-- Content of the Borrow List page -->
+            <h3>Borrowed Books</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Book Name</th>
+                        <th>Author</th>
+                        <th>Issue Date</th>
+                        <th>Return Date</th> <!-- Added Return Date column -->
+                        <th>Days Left</th> <!-- Added countdown column -->
+                    </tr>
+                </thead>
+                <tbody id="borrowedBooksList2"></tbody>
+            </table>
+        </div>
+        
+        <!--  -->
+        <div id="studentListPage" class="hidden">
+            <h2>Student List</h2>
+            
+            <!-- Search and Ordering Section -->
+            <div>
+                <input type="text" id="studentSearch" placeholder="Search for students..." oninput="searchStudents()" />
+                <select id="studentOrder" onchange="orderStudents()">
+                    <option value="">Order By</option>
+                    <option value="roll">Roll</option>
+                    <option value="first_name">First Name</option>
+                    <option value="last_name">Last Name</option>
+                    <option value="session">Session</option> <!-- Order by session -->
+                </select>
+                
+                <select id="studentOrderDirection" onchange="orderStudents()">
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                </select>
+                
+            </div>
+        
+            <!-- Student List Table -->
+            <table id="studentList">
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Roll</th>
+                        <th>Session</th> <!-- New Session Column -->
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        
+        <!--  -->
+
+        
+        
+        <div id="borrowRequestsPage">
+            <h2>Borrow Requests</h2>
+        
+            <!-- Search Bar -->
+            <input type="text" id="borrowRequestSearch" placeholder="Search by roll, book name, author..." onkeyup="searchBorrowRequests()">
+            
+            <!-- Ordering Options -->
+            <select id="borrowRequestOrder" onchange="orderBorrowRequests()">
+                <option value="">Order By</option>
+                <option value="student.roll">Roll</option>
+                <option value="book.book_name">Book Name</option>
+                <option value="book.author">Author</option>
+                <option value="request_date">Request Date</option>
+                <option value="status">status</option>
+            </select>
+            
+            <select id="borrowRequestOrderDirection" onchange="orderBorrowRequests()">
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+            </select>
+            
+            <table id="borrowRequestsList">
+                <thead>
+                    <tr>
+                        <th>Roll</th>
+                        <th>Book Name</th>
+                        <th>Author</th>
+                        <th>Request Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Borrow requests will be rendered here -->
+                </tbody>
+            </table>
+        </div>
+        
+
+    
+</body>
