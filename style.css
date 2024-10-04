@@ -72,15 +72,9 @@ table th {
 .button:hover {
     background-color: #0056b3;
 }
-.container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
 
-.item {
-    flex: 1 1 100%; /* Full width on small screens */
-}
+
+
 
 @media (min-width: 768px) {
     .item {
