@@ -369,7 +369,7 @@ function showPage(pageId) {
                     body: JSON.stringify(registerData)
                 });
 
-                if (!response.ok) throw new Error('Registration failed.');
+                if (!response.ok) throw new Error('Registration failed. too similar to your other information or less than 8 characters or commonly used password.Your password can’t be entirely numeric');
 
                 alert('Registration successful! Please log in.');
                 showPage('login');
