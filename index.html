@@ -33,26 +33,27 @@
             <h2>Welcome to the Library!</h2>
             <p>Please log in to manage your borrow requests and view your profile.</p>
         </div>
-        <div id="loginPage" class="hidden">
-            <h2>Login</h2>
-            <form onsubmit="login(event)">
-                <label>Username: <input type="text" id="loginUsername" required></label><br><br>
-                <label>Password: <input type="password" id="loginPassword" required></label><br><br>
-                <button type="submit" class="button">Login</button>
-            </form>
-        </div>
-        <div id="registerPage" class="hidden">
-            <h2>Register</h2>
-            <form onsubmit="register(event)">
-                <label>Username: <input type="text" id="registerUsername" required></label><br><br>
-                <label>Email: <input type="email" id="registerEmail" required></label><br><br>
-                <label>First Name: <input type="text" id="registerFirstName" required></label><br><br>
-                <label>Last Name: <input type="text" id="registerLastName" required></label><br><br>
-                <label>Password: <input type="password" id="registerPassword" required></label><br><br>
-                <label>Confirm Password: <input type="password" id="rewritePassword" required></label><br><br>
-                <button type="submit" class="button">Register</button>
-            </form>
-        </div>
+        
+            <div id="loginPage" class="hidden">
+                <h2>Login</h2>
+                <form onsubmit="login(event)">
+                    <label>Username: <input placeholder="Enter your ID/Roll" type="text" id="loginUsername" required></label><br><br>
+                    <label>Password: <input type="password" id="loginPassword" required></label><br><br>
+                    <button type="submit" class="button">Login</button>
+                </form>
+            </div>
+            <div id="registerPage" class="hidden">
+                <h2>Register</h2>
+                <form onsubmit="register(event)">
+                    <label>Username: <input placeholder="Enter your ID/Roll" type="text" id="registerUsername" required></label><br><br>
+                    <label>Email: <input placeholder="Enter your mail" type="email" id="registerEmail" required></label><br><br>
+                    <label>First Name: <input  type="text" id="registerFirstName" required></label><br><br>
+                    <label>Last Name: <input type="text" id="registerLastName" required></label><br><br>
+                    <label>Password: <input placeholder="Enter strong password" type="password" id="registerPassword" required></label><br><br>
+                    <label>Confirm Password: <input type="password" id="rewritePassword" required></label><br><br>
+                    <button type="submit" class="button">Register</button>
+                </form>
+            </div>
         <div id="profilePage" class="hidden">
             <h2>User Profile</h2>
             <div id="userInfo">
@@ -345,39 +346,45 @@ function showPage(pageId) {
         }
     
         async function register(event) {
-            event.preventDefault();
-            const username = document.getElementById('registerUsername').value;
-            const email = document.getElementById('registerEmail').value;
-            const firstName = document.getElementById('registerFirstName').value;
-            const lastName = document.getElementById('registerLastName').value;
-            const password = document.getElementById('registerPassword').value;
-
-            const registerData = {
-                username,
-                email,
-                first_name: firstName,
-                last_name: lastName,
-                password
-            };
-
-            try {
-                const response = await fetch(apiUrls.register, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(registerData)
-                });
-
-                if (!response.ok) throw new Error('Registration failed. too similar to your other information or less than 8 characters or commonly used password.Your password can’t be entirely numeric');
-
-                alert('Registration successful! Please log in.');
-                showPage('login');
-            } catch (error) {
-                alert(error.message);
-            }
-        }
+    event.preventDefault();
+    const username = document.getElementById('registerUsername').value;
     
+    // Check if username has 6th and 7th characters as "7"
+    if (username.length < 7 || username[5] !== '7' || username[6] !== '7') {
+        alert('You are not eligible to register, only for ICE students.');
+        return; // Stop the registration process
+    }
+
+    const email = document.getElementById('registerEmail').value;
+    const firstName = document.getElementById('registerFirstName').value;
+    const lastName = document.getElementById('registerLastName').value;
+    const password = document.getElementById('registerPassword').value;
+
+    const registerData = {
+        username,
+        email,
+        first_name: firstName,
+        last_name: lastName,
+        password
+    };
+
+    try {
+        const response = await fetch(apiUrls.register, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(registerData)
+        });
+
+        if (!response.ok) throw new Error('Registration failed. too similar to your other information or less than 8 characters or commonly used password.Your password can’t be entirely numeric');
+
+        alert('Registration successful! Please log in.');
+        showPage('login');
+    } catch (error) {
+        alert(error.message);
+    }
+}
 
     
         async function updateProfile(event) {
